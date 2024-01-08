@@ -3,7 +3,7 @@
 <div class="container-fluid">
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h2    class="m-0 font-weight-bold text-primary">Data Member</h2   >
+      <h2    class="m-0 font-weight-bold text-primary">Data peminjaman</h2   >
       <br />
       {% if messages %} 
         {% for message in messages %}
@@ -22,8 +22,9 @@
             {{ message | safe }}
         </div>
         {% endfor %} 
+
+        
       {% endif %}
-      <a href="{% url 'createmember'%}" type="button" class="btn btn-primary"><i class="fas fa-fw fa-save"></i> Tambah Data Member </a>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -36,33 +37,35 @@
           <thead>
             <tr>
               <th>No</th>
-              <th>Nama Member</th>
-              <th>Alamat</th>
-              <th>Email</th>
+              <th>Nama Peminjam</th>
+              <th>Judul Buku</th>
+              <th>tanggal pinjam</th>
+              <th>tanggal Kembali</th>
+              <th>tanggal Pengembalian</th>
+              <th>Status Peminjaman</th>
               <th>Aksi</th>
             </tr>
           </thead>
-          <tfoot>
-            <tr>
-              <th>No</th>
-              <th>Nama Member</th>
-              <th>Alamat</th>
-              <th>Email</th>
-              <th>Aksi</th>
-            </tr>
-          </tfoot>
           <tbody>
-            {% for member in member %}
+            {% for peminjaman in peminjaman %}
             <tr>
-              <td>{{member.id}}</td>
-              <td>{{member.nama}}</td>
-              <td>{{member.alamat}}</td>
-              <td>{{member.email}}</td>
+              <td>{{peminjaman.id}}</td>
+              <td>{{peminjaman.member.username}}</td>
+              <td>{{peminjaman.buku.judul}}</td>
+              <td>{{peminjaman.tanggal_pinjam}}</td>
+              <td>{{peminjaman.tanggal_kembali}}</td>
+              <td>{{peminjaman.tanggal_pengembalian|default:"Not Rerturned"}}</td>
+              <td>{% if peminjaman.status %}
+                Returned
+                {% else %}
+                Not Returned
+                {% endif %}
+              </td>
               <td>
-                <a href="edit/{{member.id}}" class="btn btn-warning ">
+                <a href="edit/{{peminjaman.id}}" class="btn btn-warning ">
                   <i class="fas fa-fw fa-edit"></i><span class="text"> Edit</span>
                 </a>
-                <a href="delete/{{member.id}}" onclick="return confirm('aapakah anda yakin?')" class="btn btn-danger ">
+                <a href="delete/{{peminjaman.id}}" onclick="return confirm('apakah anda yakin?')" class="btn btn-danger ">
                   <i class="fas fa-fw fa-trash"></i><span class="text"> Delete</span>
                 </a>
               </td>

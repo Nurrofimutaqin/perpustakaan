@@ -1,7 +1,7 @@
 from book.models import *
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
-
+from datetime import date
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +18,32 @@ class BookLoanSerializer(serializers.ModelSerializer):
         model = Peminjaman
         fields = '__all__'
 
+class BookLoanUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Peminjaman
+        fields = ['buku', 'tanggal_kembali']
+
+class OverDueSerializer(serializers.ModelSerializer):
+    days_overdue = serializers.SerializerMethodField()
+    class Meta:
+        model = Peminjaman
+        fields = '__all__'
+
+    def get_days_overdue(self, obj):
+        if obj.tanggal_kembali and obj.tanggal_kembali < date.today() and not obj.status:
+            return (date.today() - obj.tanggal_kembali).days
+        return 0
+    
+class NearOverDueSerializer(serializers.ModelSerializer):
+    sisa_waktu = serializers.SerializerMethodField()
+    class Meta:
+        model = Peminjaman
+        fields = '__all__'
+
+    def get_sisa_waktu(self, obj):
+        if obj.tanggal_kembali and obj.tanggal_kembali > date.today() and not obj.status:
+            return str(( obj.tanggal_kembali - date.today()).days) + ' days'
+        return 0
 
     
 # class UserSerializer(serializers.ModelSerializer):

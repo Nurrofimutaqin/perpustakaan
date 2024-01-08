@@ -14,13 +14,17 @@ class formBook(ModelForm):
         #     'cover' : forms.TextInput({'class' : 'form-control', 'type': 'file'}),
         # }
 
-class formLoan(forms.ModelForm):
-    book = forms.ModelChoiceField(queryset = Book.objects.all(), label= 'book')
-    member = forms.ModelChoiceField(queryset = CustomUser.objects.all(), label= 'member')
+# class formLoan(forms.ModelForm):
+#     book = forms.ModelChoiceField(queryset = Book.objects.all(), label= 'book')
+#     member = forms.ModelChoiceField(queryset = CustomUser.objects.all(), label= 'member')
+#     class Meta:
+#         model = Peminjaman
+#         fields = ['book', 'member', 'tanggal_kembali']
+
+class PeminjamanForm(forms.ModelForm):
     class Meta:
         model = Peminjaman
-        fields = ['book', 'member', 'tanggal_kembali']
-
+        fields = ['buku', 'tanggal_kembali']
 
 
 class formCategory(ModelForm):

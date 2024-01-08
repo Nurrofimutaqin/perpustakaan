@@ -47,6 +47,9 @@ urlpatterns = [
      #pakai rest framework aja dan tidak dipakai
     path('member/login/', views.MemberLoginView.as_view(), name='member-login'),
     path('member/profile/', views.MemberProfileView.as_view(), name='member-profile'),
+
+
+    path('member/book-loans/', views.BookLoansUser.as_view(), name='member-book-loans'),
 ]
                                                                         
 urlpatterns = format_suffix_patterns(urlpatterns)

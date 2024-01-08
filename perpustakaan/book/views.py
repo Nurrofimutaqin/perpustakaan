@@ -57,6 +57,32 @@ class BookCreateView(View):
         messages.success(request, 'Berhasil Input Data Buku')
         return redirect('book-list')
 
+
+
+
+class PeminjamanCreateView(View):
+    template_name = 'peminjaman/tambah_peminjaman.html'
+
+    def get(self, request):
+        form = PeminjamanForm()
+        book = Book.objects.all()
+        return render(request, self.template_name, {'form': form, 'book': book})
+    def post(self, request):
+        form = PeminjamanForm(request.POST)
+        if form.is_valid():
+            peminjaman = form.save(commit=False)
+            peminjaman.member = request.user
+            peminjaman.save()
+            messages.success(request, 'Berhasil Input Data peminjaman')
+            return redirect('datapeminjaman')
+        return render(request, self.template_name, {'form': form})
+    
+class ListPeminjamanByUser(View):
+    template_name = 'peminjaman/list_peminjaman_user.html'
+    def get(self, request):
+        peminjaman = Peminjaman.objects.filter(member = request.user )
+        return render(request, self.template_name, { 'peminjaman': peminjaman})
+    
 @method_decorator(login_required, name='dispatch')
 class BooksUpdateView(UpdateView):
     template_name = 'buku/editbuku.html'
@@ -67,9 +93,13 @@ class BooksUpdateView(UpdateView):
         return render(request, self.template_name, {'books': books, 'categorys': categorys, 'form': form})
     def post(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
-        form = formBook(request.POST, request.FILES, instance=book)
+        form = formBook(request.POST or None, request.FILES or None, instance=book)
         if form.is_valid():
-            form.save()
+            if book.cover and form.cleaned_data['cover'] != book.cover:
+                book.cover.delete(save=False)
+            
+            new_instance = form.save(commit=False)
+            new_instance.save()
 
         # Redirect ke halaman setelah berhasil mengupdate data
             messages.success(request, 'berhasil edit data member')
@@ -80,7 +110,9 @@ class BooksUpdateView(UpdateView):
 
 @login_required(login_url=settings.LOGIN_URL)
 def deleteBook(request, id):
+
     book = Book.objects.get(id=id)
+    book.cover.delete(save=False)
     book.delete()
     messages.success(request, 'berhasil menghapus data buku')
     return redirect('book-list')
@@ -102,11 +134,9 @@ def createpeminjaman(request):
     # peminjaman = Peminjaman.objects.all()
     member = CustomUser.objects.all()
     buku = Book.objects.all()
-    peminjaman = formLoan()
     context = {
         'member' : member,
-        'buku' : buku,
-        'peminjaman': peminjaman
+        'buku' : buku
     }
     if request.POST:
         tanggal_kembali = request.POST['tanggal_kembali']

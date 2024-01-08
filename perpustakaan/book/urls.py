@@ -35,5 +35,8 @@ urlpatterns =[
     path('categorys/create', CategoryCreateView.as_view(), name='category-create'),
     path('categorys/edit/<int:pk>/', CategoryUpdateView.as_view(), name='category-update'),
     path('categorys/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category-delete'),
+    path('book-loan/by-user/', PeminjamanCreateView.as_view(), name='loans-by-user'),
+    path('list-book-loans/by-user/', ListPeminjamanByUser.as_view(), name='list-loan-user'),
+
     ]
 

@@ -27,7 +27,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class LargeResultsSetPagination(PageNumberPagination):
-    page_size = 1
+    page_size = 5
     page_size_query_param = 'page_size'
 
 
@@ -75,7 +75,7 @@ class UserList(generics.ListCreateAPIView):
 #     serializer_class = UserSerializer
 
 class NearOverdueViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = BookLoanSerializer
+    serializer_class = NearOverDueSerializer
     pagination_class = LargeResultsSetPagination
     def get_queryset(self):
         # Ambil data peminjaman buku yang hampir deadline (misalnya, 3 hari lagi)
@@ -86,7 +86,7 @@ class NearOverdueViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
     
 class OverdueViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = BookLoanSerializer
+    serializer_class = OverDueSerializer
     pagination_class = LargeResultsSetPagination
     def get_queryset(self):
         overdue = Peminjaman.objects.filter(tanggal_kembali__lte=date.today(), status=False)
@@ -280,3 +280,15 @@ class MemberProfileUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BookLoansUser(generics.ListCreateAPIView):
+    queryset = Peminjaman.objects.all()
+    serializer_class = BookLoanUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(member=self.request.user)
+    def get_queryset(self):
+        # Mengambil data peminjaman yang sesuai dengan user yang sedang login
+        return Peminjaman.objects.filter(member=self.request.user)
