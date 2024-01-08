@@ -1,0 +1,105 @@
+{% extends "index.html"%} {% block content%}
+<div class="card">
+  <div class="card-header text-light bg-gradient-danger">
+    <h3>Edit Data {{book.judul}}</h3>
+  </div>
+  <div class="card-body col-5">
+    <form
+      method="post"
+      action="{% url 'books-update' books.id%}"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="judul">Judul Buku</label>
+        <div class="col-8">
+          <input
+            id="judul"
+            name="judul"
+            value="{{books.judul}}"
+            placeholder="Masukan Nama Buku"
+            type="text"
+            class="form-control"
+            required="required"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="penerbit" class="col-4 col-form-label">Nama Penerbit</label>
+        <div class="col-8">
+          <input
+            id="penerbit"
+            name="penerbit"
+            value="{{books.penerbit}}"
+            placeholder="Masukan Penerbit"
+            type="text"
+            class="form-control"
+            required="required"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="penulis" class="col-4 col-form-label">Nama penulis</label>
+        <div class="col-8">
+          <input
+            id="penulis"
+            name="penulis"
+            value="{{books.penulis}}"
+            placeholder="Masukan Penerbit"
+            type="text"
+            class="form-control"
+            required="required"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="tahun_terbit" class="col-4 col-form-label"
+          >tahun_terbit</label
+        >
+        <div class="col-8">
+          <input
+            id="tahun_terbit"
+            name="tahun_terbit"
+            value="{{books.tahun_terbit}}"
+            placeholder="Masukan Penerbit"
+            type="text"
+            class="form-control"
+            required="required"
+          />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="nama">Category Buku</label> 
+        <div class="col-8">
+          <select class="form-control" aria-label="Default select example" name="categorybook">
+            <option>Open this select menu</option>
+            {% for categorys in categorys %}
+              {% if categorys.id == books.categorybook_id %}
+                <option value="{{categorys.id}}" selected>{{categorys.namaCategory}}</option>
+              {% else %}
+                <option value="{{categorys.id}}">{{categorys.namaCategory}}</option>
+              {% endif %}
+            {%endfor%}
+          </select>
+        </div>
+    </div>
+    <div class="form-group row">
+      <label for="cover" class="col-4 col-form-label">Cover Buku</label> 
+      <div class="col-8">
+        <!-- <input id="cover" name="cover" value="{{books.cover}}" type="file"  class="form-control" required="required"> -->
+        
+      {{form.cover}}
+      </div>
+    </div> 
+      <button
+        type="submit"
+        name="submit"
+        class="btn btn-primary align-items-center"
+      >
+        Update Data
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock content%}

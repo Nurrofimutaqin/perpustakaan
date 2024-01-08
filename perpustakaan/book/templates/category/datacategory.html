@@ -1,0 +1,65 @@
+<!-- DataTales Example -->
+{% extends "index.html"%} {% block content%}
+<div class="container-fluid">
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h2    class="m-0 font-weight-bold text-primary">Data Category</h2   >
+      <br />
+      {% if messages %} 
+        {% for message in messages %}
+        <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+        >
+            <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+            >
+            <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+        {% endfor %} 
+      {% endif %}
+      <a href="{% url 'category-create'%}" type="button" class="btn btn-primary"><i class="fas fa-fw fa-save"></i> Tambah Data Buku</a>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          class="table table-bordered"
+          id="dataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Category Buku</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for categorys in category %}
+            <tr>
+              <td>{{categorys.id}}</td>
+              <td>{{categorys.namaCategory}}</td>
+              <td>
+                <a href="edit/{{categorys.id}}" class="btn btn-warning ">
+                  <i class="fas fa-fw fa-edit"></i><span class="text"> Edit</span>
+                </a>
+                <a href="delete/{{categorys.id}}"  class="btn btn-danger ">
+                  <i class="fas fa-fw fa-trash"></i><span class="text"> Delete</span>
+                </a>
+              </td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endblock content%}

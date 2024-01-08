@@ -1,0 +1,72 @@
+<!-- DataTales Example -->
+{% extends "index.html"%} {% block content%}
+<div class="container-fluid">
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h2    class="m-0 font-weight-bold text-primary">Data Peminjaman Buku yang sudah melewati Jatuh tempo</h2   >
+      <br />
+      {% if messages %} 
+        {% for message in messages %}
+        <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+        >
+            <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+            >
+            <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message | safe }}
+        </div>
+        {% endfor %} 
+      {% endif %}
+      <a href="{% url 'datapeminjaman'%}" type="button" class="btn btn-primary">kembali </a>
+      
+      
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          class="table table-bordered"
+          id="dataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Peminjam</th>
+              <th>Judul Buku</th>
+              <th>Waktu Terlewat</th>
+              <th>Tanggal Kembali</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for deadline in deadline %}
+            <tr>
+              <td>{{deadline.id}}</td>
+              <td>{{deadline.member.username}}</td>
+              <td>{{deadline.buku.judul}}</td>
+              <td>{{deadline.dead}} days</td>
+              <td>{{deadline.tanggal_kembali}}</td>
+              <td>
+                {% if deadline.status %}
+                Returned
+                {% else %}
+                Not Returned
+                {% endif %}
+              </td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endblock content%}

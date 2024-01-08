@@ -1,0 +1,45 @@
+{% extends "index.html"%} {% block content%}
+<div class="card">
+  <div class="card-header text-light bg-gradient-danger">
+    <h3>Tambah Data Peminjaman</h3> </div>
+  <hr>
+  <div class="card-body">
+    <div class="card-body col-sm-5">
+    <form method="post" action="{% url 'createpeminjaman'%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group row">
+          <label for="tanggal_kembali" class="col-4 col-form-label"> Tanggal Kembali</label> 
+          <div class="col-8">
+            <input id="tanggal_kembali" name="tanggal_kembali" placeholder="Masukan  tanggal kembali" type="date" class="form-control">
+          </div>
+        </div> 
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="nama">Judul Buku</label> 
+            <div class="col-8">
+              <select class="form-control" aria-label="Default select example" name="buku_id">
+                <option selected>Open this select menu</option>
+                {% for buku in buku %}
+                  <option value="{{buku.id}}">{{buku.judul}}</option>
+                {%endfor%}
+              </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="nama">Nama Peminjam</label> 
+            <div class="col-8">
+              <select class="form-control" aria-label="Default select example" name="member_id">
+                <option selected>Open this select menu</option>
+                {% for member in member %}
+                  <option value="{{member.id}}">{{member.username}}</option>
+                {%endfor%}
+              </select>
+            </div>
+        </div>
+        <hr>
+        <a href="{% url 'datapeminjaman'%}" type="button" class="btn btn-primary">Back </a>
+        <button type="submit" name="submit" class="btn btn-warning align-items-center">Submit</button>
+      </form>
+    </div>
+  </div>  
+</div>
+{% endblock content%}

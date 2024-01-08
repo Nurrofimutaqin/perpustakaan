@@ -1,0 +1,81 @@
+{% extends "index.html"%} {% block content%}
+
+<div class="card justify-content-center" >
+    <div class="card-header text-light bg-gradient-danger text-center">
+      <h3>DETAIL DATA {{buku.judul}}</h3>
+    </div>
+    <div class="card-body col-8 ">
+      <form
+      >
+        {% csrf_token %}
+        <div class="form-group row ">
+          <label class="col-4 col-form-label" for="judul">Cover Buku :</label>
+          <div class=" col-8  " >
+            {%if buku.cover %}
+              <img src="{{buku.cover.url}}" class=" border border-danger p-2">
+              {% endif %}
+            
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="penerbit" class="col-4 col-form-label">Judul Buku :</label>
+          <div class="col-8">
+            <input
+              value="{{buku.judul}}"
+              type="text"
+              class="form-control" readonly
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="penerbit" class="col-4 col-form-label">Nama Penerbit :</label>
+          <div class="col-8">
+            <input
+              value="{{buku.penerbit}}"
+              type="text"
+              class="form-control" readonly
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="penulis" class="col-4 col-form-label">Nama penulis :</label>
+          <div class="col-8">
+            <input
+              value="{{buku.penulis}}"
+              placeholder="Masukan Penerbit"
+              type="text"
+              class="form-control" readonly
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="tahun_terbit" class="col-4 col-form-label"
+            >tahun_terbit :</label
+          >
+          <div class="col-8">
+            <input
+              id="tahun_terbit"
+              name="tahun_terbit"
+              value="{{buku.tahun_terbit}}"
+              type="text"
+              class="form-control" readonly
+            />
+          </div>
+        </div>
+  
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="nama">Category Buku :</label> 
+          <div class="col-8">
+            <input
+              value="{{buku.categorybook.namaCategory}}"
+              type="text"
+              class="form-control" readonly
+            />
+          </div>
+      </div>
+
+      <a href="{% url 'book-list'%}" type="button col-5" class="btn btn-primary"><i class="fas fa-fw fa-arrow-left"></i>Back</a>
+      </form>
+    </div>
+  </div>
+  {% endblock content%}

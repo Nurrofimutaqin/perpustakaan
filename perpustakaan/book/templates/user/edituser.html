@@ -1,0 +1,51 @@
+{% extends "index.html"%} {% block content%}
+<div class="card">
+  <div class="card-header text-light bg-gradient-danger">
+    <h3>Edit Data USer</h3> </div>
+  <hr>
+<div class="card-body">
+  <div class="card-body col-5">
+  <form method="post" action="{% url 'updateuser' user.id%}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="username">username </label> 
+        <div class="col-8">
+          <input id="username" name="username"  value="{{getuser.username}}" placeholder="Masukan Nama " type="text" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="email">email </label> 
+        <div class="col-8">
+          <input id="email" name="email"  value="{{getuser.email}}" placeholder="Masukan Nama " type="email" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="first_name">first_name </label> 
+        <div class="col-8">
+          <input id="first_name" name="first_name"  value="{{getuser.first_name}}" placeholder="Masukan Nama " type="text" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="last_name">last_name </label> 
+        <div class="col-8">
+          <input id="last_name" name="last_name"  value="{{getuser.last_name}}" placeholder="Masukan Nama " type="text" class="form-control" required="required">
+        </div>
+      </div>
+      <!--<div class="form-group row">
+        <label class="col-4 col-form-label" for="password1">password1 </label> 
+        <div class="col-8">
+          <input id="password1" name="password1"  value="{{getuser.password}}" placeholder="Masukan Nama " type="text" class="form-control" required="required">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-4 col-form-label" for="password1">password1 </label> 
+        <div class="col-8">
+          <input id="password1" name="password2"  value="{{getuser.password}}" placeholder="Masukan Nama " type="text" class="form-control" required="required">
+        </div>
+      </div> -->
+      <button type="submit" name="submit" class="btn btn-primary align-items-center">Update </button>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock content%}

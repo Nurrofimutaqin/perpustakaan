@@ -1,0 +1,23 @@
+{% extends "index.html"%} {% block content%}
+<div class="card">
+
+  <div class="card-header text-light bg-gradient-danger">
+    <h3>Tambah Data Buku</h3> </div>
+  <hr>
+  <div class="card-body">
+    <div class="card-body col-sm-5">
+    <form method="post" action="{% url 'category-create'%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="Category">Category Buku</label> 
+          <div class="col-8 ">
+            <input id="Category" name="namaCategory" placeholder="Masukan Category Buku" type="text" class="form-control" required="required">
+          </div>
+        </div>
+
+        <button type="submit" name="submit" class="btn btn-primary align-items-center">Insert</button>
+      </form>
+    </div>
+  </div>  
+</div>
+{% endblock content%}
