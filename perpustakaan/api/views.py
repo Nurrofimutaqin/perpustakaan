@@ -65,13 +65,6 @@ class BookLoanDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Peminjaman.objects.all()
     serializer_class = BookLoanSerializer
 
-# class MemberList(generics.ListCreateAPIView):
-#     queryset = Member.objects.all()
-#     serializer_class = MemberSerializer
-
-# class MemberDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Member.objects.all()
-#     serializer_class = MemberSerializer
 
 class UserList(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
