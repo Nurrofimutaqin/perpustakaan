@@ -94,7 +94,12 @@
               <div class="bg-white py-2 collapse-inner rounded">
                   <h6 class="collapse-header">Peminjaman Featue</h6>
                   <a class="collapse-item" href="{% url 'datapeminjaman'%}">Data Peminjaman Buku</a>
+                  {% if request.user.is_authenticated and request.user.role == 'member'%}
+                  <a class="collapse-item" href="{% url 'loans-by-user'%}">Book loan By user</a>
+                  {%endif%}
+                  {% if request.user.is_authenticated and request.user.role == 'librarian'%}
                   <a class="collapse-item" href="{% url 'createpeminjaman'%}">Tambah Peminjaman Buku</a>
+                  {%endif%}
               </div>
           </div>
       </li>
@@ -113,8 +118,8 @@
             </div>
         </div>
     </li>
-      {% if request.user.is_authenticated %}
-        {% if request.user.role == 'librarian' %}
+      {% if request.user.is_authenticated and request.user.role == 'librarian'%}
+        <!-- {% if request.user.role == 'librarian' %} -->
           <hr class="sidebar-divider" />
           <li class="nav-item">
             <a class="nav-link" href="{% url 'datauser'%}">
@@ -122,7 +127,7 @@
               <span>user</span></a
             >
           </li>
-        {% endif%}
+        <!-- {% endif%} -->
       {% endif%}
         <hr class="sidebar-divider" />
         <li class="nav-item">

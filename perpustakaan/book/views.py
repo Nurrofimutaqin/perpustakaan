@@ -59,7 +59,8 @@ class BookCreateView(View):
 
 
 
-
+##untuk peminjaman buku berdasarkan user yang sedang login
+@method_decorator(login_required, name='dispatch')
 class PeminjamanCreateView(View):
     template_name = 'peminjaman/tambah_peminjaman.html'
 
@@ -74,9 +75,10 @@ class PeminjamanCreateView(View):
             peminjaman.member = request.user
             peminjaman.save()
             messages.success(request, 'Berhasil Input Data peminjaman')
-            return redirect('datapeminjaman')
+            return redirect('list-loan-user')
         return render(request, self.template_name, {'form': form})
-    
+
+@method_decorator(login_required, name='dispatch')
 class ListPeminjamanByUser(View):
     template_name = 'peminjaman/list_peminjaman_user.html'
     def get(self, request):
@@ -309,29 +311,14 @@ def login_history(request):
     return render(request, 'registration/login_history.html', context)
 
 # edit user dari admin page
-
-@login_required(login_url=settings.LOGIN_URL)
-def updateuser(request, id ):
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        user = CustomUser.objects.get(id=id)
-        user.username= username
-        user.email = email
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
-        messages.success(request, 'berhasil edit data user')
-        return redirect('datauser')
-
-    else:
-        getUser = CustomUser.objects.get(id=id)
-        context = {
-            'getuser' : getUser,
-        }
-        return render(request, 'user/edituser.html', context)
+@method_decorator(login_required, name='dispatch')
+@method_decorator(librarian_required, name='dispatch')  
+class UserUpdateView(UpdateView):
+    model = CustomUser
+    form_class = UpdateUserForm
+    context_object_name = 'user'
+    template_name = 'user/edituser.html'
+    success_url = reverse_lazy('datauser')
 
 @login_required
 def update_password(request):

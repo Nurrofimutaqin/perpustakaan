@@ -31,6 +31,11 @@ class formCategory(ModelForm):
     class Meta:
         model = CategoryBook
         fields = '__all__'
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name', 'role']
         
 # class CustomUserChangeForm(UserChangeForm):
 #     class Meta:

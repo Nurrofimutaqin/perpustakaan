@@ -23,7 +23,9 @@
         </div>
         {% endfor %} 
       {% endif %}
+      {% if request.user.is_authenticated and request.user.role == 'librarian'%}
       <a href="{% url 'book-create'%}" type="button" class="btn btn-primary"><i class="fas fa-fw fa-save"></i> Tambah Data Buku</a>
+      {% endif %}
     </div>
     <div class="card-body ">
       <div class="table-responsive ">
@@ -62,12 +64,14 @@
                 <a href="detail/{{books.id}}" class="btn btn-secondary ">
                   <i class="fas fa-fw fa-info"></i><span class="text"> Detail</span>
                 </a>
+                {% if request.user.is_authenticated and request.user.role == 'librarian'%}
                 <a href="edit/{{books.id}}" class="btn btn-warning ">
                   <i class="fas fa-fw fa-edit"></i><span class="text"> Edit</span>
                 </a>
                 <a href="delete/{{books.id}}" onclick="return confirm('aapakah anda yakin?')" class="btn btn-danger ">
                   <i class="fas fa-fw fa-trash"></i><span class="text"> Delete</span>
                 </a>
+                {% endif %}
               </td>
             </tr>
             {%endfor%}
