@@ -35,7 +35,17 @@
               </select>
             </div>
         </div> -->
-        {{form.buku}}
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="nama">Judul Buku</label> 
+          <div class="col-8">
+            <select class="form-control" aria-label="Default select example" name="buku">
+              <option selected>Open this select menu</option>
+              {% for buku in book %}
+                <option value="{{buku.id}}">{{buku.judul}}</option>
+              {%endfor%}
+            </select>
+          </div>
+      </div>
         <div class="form-group row">
           <label for="tanggal_kembali" class="col-4 col-form-label"> Tanggal Kembali</label> 
           <div class="col-8">

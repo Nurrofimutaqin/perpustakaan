@@ -3,7 +3,7 @@
   <div class="card-header text-light bg-gradient-danger">
     <h3>Edit Data {{book.judul}}</h3>
   </div>
-  <div class="card-body col-5">
+  <div class="card-body">
     <form
       method="post"
       action="{% url 'books-update' books.id%}"
@@ -92,13 +92,16 @@
       {{form.cover}}
       </div>
     </div> 
+    <hr>
       <button
         type="submit"
         name="submit"
-        class="btn btn-primary align-items-center"
+        class="btn btn-primary align-items-center col-12"
       >
         Update Data
       </button>
+      <hr>
+      <a href="{% url 'book-list'%}" type="button col-5" class="btn btn-danger"><i class="fas fa-fw fa-arrow-left"></i>Back</a>
     </form>
   </div>
 </div>

@@ -22,7 +22,8 @@ urlpatterns =[
     path('peminjaman/reportdeadline', views.report_deadline, name='reportdeadline'),
     path('peminjaman/hampirdeadline', views.report_hampir_deadline, name='hampirdeadline'),
 
-    path('user/', views.datauser, name='datauser'),
+    # path('user/', views.datauser, name='datauser'),
+    path('user/', ListUser.as_view(), name='datauser'),
     path('signup/', views.signup, name='signup'),
     path('user/create/', views.createuser, name='createuser'),
     path('user/delete/<int:id>/', views.deleteuser, name='deleteuser'),
@@ -37,6 +38,6 @@ urlpatterns =[
     path('categorys/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category-delete'),
     path('book-loan/by-user/', PeminjamanCreateView.as_view(), name='loans-by-user'),
     path('list-book-loans/by-user/', ListPeminjamanByUser.as_view(), name='list-loan-user'),
-
+    path('books/peminjaman/<int:pk>/', LoanBookFromBook.as_view(), name='loan_book_from_book'),
     ]
 

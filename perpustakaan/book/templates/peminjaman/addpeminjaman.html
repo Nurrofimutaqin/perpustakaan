@@ -2,9 +2,7 @@
 <div class="card">
   <div class="card-header text-light bg-gradient-danger">
     <h3>Tambah Data Peminjaman</h3> </div>
-  <hr>
   <div class="card-body">
-    <div class="card-body col-sm-5">
     <form method="post" action="{% url 'createpeminjaman'%}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group row">
@@ -39,7 +37,6 @@
         <a href="{% url 'datapeminjaman'%}" type="button" class="btn btn-primary">Back </a>
         <button type="submit" name="submit" class="btn btn-warning align-items-center">Submit</button>
       </form>
-    </div>
   </div>  
 </div>
 {% endblock content%}

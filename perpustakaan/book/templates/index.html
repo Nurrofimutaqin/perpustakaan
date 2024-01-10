@@ -95,6 +95,7 @@
                   <h6 class="collapse-header">Peminjaman Featue</h6>
                   <a class="collapse-item" href="{% url 'datapeminjaman'%}">Data Peminjaman Buku</a>
                   {% if request.user.is_authenticated and request.user.role == 'member'%}
+                  <a class="collapse-item" href="{% url 'list-loan-user'%}">List Book loan By user</a>
                   <a class="collapse-item" href="{% url 'loans-by-user'%}">Book loan By user</a>
                   {%endif%}
                   {% if request.user.is_authenticated and request.user.role == 'librarian'%}

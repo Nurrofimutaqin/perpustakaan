@@ -5,7 +5,6 @@
     <h3>Tambah Data Buku</h3> </div>
   <hr>
   <div class="card-body">
-    <div class="card-body col-sm-5">
     <form method="post" action="{% url 'category-create'%}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group row">
@@ -17,7 +16,6 @@
 
         <button type="submit" name="submit" class="btn btn-primary align-items-center">Insert</button>
       </form>
-    </div>
   </div>  
 </div>
 {% endblock content%}

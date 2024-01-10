@@ -2,8 +2,8 @@
 <div class="card">
 
   <div class="card-header text-light bg-gradient-danger text-center">
-    <h3>Tambah Data Buku</h3> </div>
-  <hr>
+    <h3>Tambah Data Buku</h3> 
+  </div>
   <div class="card-body">
     <div class="card-body col-sm-5">
     <form method="post" action="{% url 'book-create'%}" enctype="multipart/form-data">
@@ -50,7 +50,10 @@
             <input id="cover" name="cover"  type="file"  class="form-control" required="required">
           </div>
         </div> 
-        <button type="submit" name="submit" class="btn btn-primary align-items-center">Insert</button>
+        <hr>
+        <button type="submit" name="submit" class="btn btn-primary col-12">Insert</button>
+        <hr>
+        <a href="{% url 'book-list'%}" type="button col-5" class="btn btn-danger"><i class="fas fa-fw fa-arrow-left"></i>Back</a>
       </form>
     </div>
   </div>  

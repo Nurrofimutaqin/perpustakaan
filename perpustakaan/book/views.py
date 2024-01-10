@@ -62,7 +62,7 @@ class BookCreateView(View):
 ##untuk peminjaman buku berdasarkan user yang sedang login
 @method_decorator(login_required, name='dispatch')
 class PeminjamanCreateView(View):
-    template_name = 'peminjaman/tambah_peminjaman.html'
+    template_name = 'peminjaman/tambah_peminjaman_by_user.html'
 
     def get(self, request):
         form = PeminjamanForm()
@@ -84,7 +84,27 @@ class ListPeminjamanByUser(View):
     def get(self, request):
         peminjaman = Peminjaman.objects.filter(member = request.user )
         return render(request, self.template_name, { 'peminjaman': peminjaman})
-    
+
+class LoanBookFromBook(View):
+    template_name = 'buku/peminjaman.html'
+    def get(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        form = PeminjamanForm()
+        return render(request, self.template_name, {'book': book, 'form':form})
+    def post(self, request, pk):
+        buku = Book.objects.get(pk=pk)
+        form = PeminjamanForm(request.POST)
+        
+        if form.is_valid():
+            peminjaman = form.save(commit=False)
+            peminjaman.buku = buku
+            peminjaman.member = request.user
+            peminjaman.save()
+
+            messages.success(request, 'Berhasil Input Data peminjaman')
+            return redirect('list-loan-user')  # Ganti dengan URL halaman sukses peminjaman
+
+        return render(request, self.template_name, {'form': form, 'buku': buku})
 @method_decorator(login_required, name='dispatch')
 class BooksUpdateView(UpdateView):
     template_name = 'buku/editbuku.html'
@@ -234,14 +254,12 @@ def report_hampir_deadline(request):
 
 
 #untuk Crud user
-@login_required(login_url=settings.LOGIN_URL)
-def datauser(request):
-    user = CustomUser.objects.all()
-    context = {
-        'user' : user,
-    }
-    return render(request, 'user/datauser.html', context)
-
+@method_decorator(login_required, name='dispatch')
+@method_decorator(librarian_required, name='dispatch')
+class ListUser(ListView):
+    model = CustomUser
+    template_name = 'user/datauser.html'
+    context_object_name = 'user'
 
 @librarian_required
 def createuser(request):
