@@ -14,7 +14,7 @@ urlpatterns = [
     path('categorys/<int:pk>/', views.CategoryDetail.as_view()),
     path('book-loans/', views.BookLoanList.as_view()),
     path('book-loans/<int:pk>/', views.BookLoanDetail.as_view()),
-    path('users/', views.UserList.as_view()),
+    # path('users/', views.UserList.as_view()),
     # path('users/<int:pk>/', views.UserDetail.as_view()),
     path('book-loans/near-overdue/', views.NearOverdueViewSet.as_view({'get': 'list'})),
     path('book-loans/overdue/', views.OverdueViewSet.as_view({'get': 'list'})),
@@ -24,7 +24,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify                                                                                '),
     path('filter-book/judul/', views.BookListFilterByJudul.as_view(), name='filter-book-judul'),
-    path('filter-book/category_year/', views.BookFilterByCategory_Year.as_view(), name='filter-book'),
+    path('filter-book/category/', views.BookFilterByCategory_Year.as_view(), name='filter-book'),
     #registrasi 
     path('registration/', views.RegistUser.as_view()),
 
@@ -42,6 +42,9 @@ urlpatterns = [
 
 
 
+    path('change-password/', views.ChangePasswordAllView.as_view(), name='change-password-All'),
+    path('logout/', views.LogoutAllView.as_view(), name='logout'),
+    path('login/', views.LoginToAll.as_view()),
 
 
      #pakai rest framework aja dan tidak dipakai
@@ -50,6 +53,9 @@ urlpatterns = [
 
 
     path('member/book-loans/', views.BookLoansUser.as_view(), name='member-book-loans'),
+    path('member/book-loan-by-buku/<int:id>', views.BookLoanByBuku.as_view(), name='member-book-loans'),
+    path('book-loans/user/', views.BookLoanListByUser.as_view(), name='loans-user'),
+
 ]
                                                                         
 urlpatterns = format_suffix_patterns(urlpatterns)

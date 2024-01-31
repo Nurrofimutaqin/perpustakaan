@@ -14,17 +14,26 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BookLoanSerializer(serializers.ModelSerializer):
+    member_nama = serializers.CharField(source='member.username', read_only=True)
+    buku_judul = serializers.CharField(source='buku.judul', read_only=True)
     class Meta:
         model = Peminjaman
-        fields = '__all__'
+        fields = ['id', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_pengembalian', 'status', 'member_nama', 'buku_judul']
 
 class BookLoanUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Peminjaman
         fields = ['buku', 'tanggal_kembali']
 
+class BookLoanByBukuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Peminjaman
+        fields = ['tanggal_kembali']
+
 class OverDueSerializer(serializers.ModelSerializer):
     days_overdue = serializers.SerializerMethodField()
+    member_nama = serializers.CharField(source='member.username', read_only=True)
+    buku_judul = serializers.CharField(source='buku.judul', read_only=True)
     class Meta:
         model = Peminjaman
         fields = '__all__'
@@ -36,6 +45,8 @@ class OverDueSerializer(serializers.ModelSerializer):
     
 class NearOverDueSerializer(serializers.ModelSerializer):
     sisa_waktu = serializers.SerializerMethodField()
+    member_nama = serializers.CharField(source='member.username', read_only=True)
+    buku_judul = serializers.CharField(source='buku.judul', read_only=True)
     class Meta:
         model = Peminjaman
         fields = '__all__'
@@ -54,8 +65,7 @@ class NearOverDueSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username','password', 'role']
-        extra_kwargs = {"password": {"write_only": True}}
+        fields = ['id','username','email','first_name','last_name', 'role']
 
 class UserSerializer(ModelSerializer):
      

@@ -27,15 +27,16 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class LargeResultsSetPagination(PageNumberPagination):
-    page_size = 5
+    page_size = 20
     page_size_query_param = 'page_size'
 
 
 class BookList(generics.ListCreateAPIView):
+
+    permission_classes = [IsAuthenticated]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     pagination_class = LargeResultsSetPagination
-    permission_classes = [IsAuthenticated]
 
 
 ##register
@@ -52,23 +53,27 @@ class CategoryList(generics.ListCreateAPIView):
     serializer_class = CategorySerializer
 
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = CategoryBook.objects.all()
     serializer_class = CategorySerializer
 
 class BookLoanList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Peminjaman.objects.all()
     serializer_class = BookLoanSerializer
     pagination_class = LargeResultsSetPagination
 
 
 class BookLoanDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Peminjaman.objects.all()
     serializer_class = BookLoanSerializer
 
 
-class UserList(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+# class UserList(generics.ListCreateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = CustomUser.objects.all()
+#     serializer_class = UserSerializer
 
 # class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = get_user_model()
@@ -76,7 +81,7 @@ class UserList(generics.ListCreateAPIView):
 
 class NearOverdueViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = NearOverDueSerializer
-    pagination_class = LargeResultsSetPagination
+    # pagination_class = LargeResultsSetPagination
     def get_queryset(self):
         # Ambil data peminjaman buku yang hampir deadline (misalnya, 3 hari lagi)
         tomorow = date.today() + timedelta(days=1)
@@ -87,7 +92,7 @@ class NearOverdueViewSet(viewsets.ReadOnlyModelViewSet):
     
 class OverdueViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OverDueSerializer
-    pagination_class = LargeResultsSetPagination
+    # pagination_class = LargeResultsSetPagination
     def get_queryset(self):
         overdue = Peminjaman.objects.filter(tanggal_kembali__lte=date.today(), status=False)
         return overdue
@@ -105,8 +110,8 @@ class MemberLoginView(ObtainAuthToken):
 
 class MemberProfileView(APIView):
     def get(self, request, *args, **kwargs):
-        customuser = request.customuser
-        if customuser.role == 'member':
+        customuser = request.user
+        if customuser is not None:
             serializer = CustomUserSerializer(customuser)
             return Response(serializer.data)
         else:
@@ -122,7 +127,7 @@ class BookFilterByCategory_Year(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['categorybook__namaCategory', 'tahun_terbit']
+    filterset_fields = ['categorybook__namaCategory']
     
 
 
@@ -262,8 +267,65 @@ class ChangePasswordLibrarianView(APIView):
         refresh.blacklist()
 
         return Response({'detail': 'Kata sandi berhasil diubah.'}, status=status.HTTP_200_OK)
-    
 
+#untuk semua user member dan librarian
+class LogoutAllView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            # Hapus token akses
+            refresh_token = request.data.get('refresh')
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({'detail': 'Logout berhasil'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class LoginToAll(APIView):
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            serializer = CustomUserSerializer(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': serializer.data
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Invalid Username and Password'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+class ChangePasswordAllView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+
+        old_password = serializer.validated_data['old_password']
+        new_password = serializer.validated_data['new_password']
+
+        # Validasi kata sandi lama
+        if not user.check_password(old_password):
+            return Response({'detail': 'Kata sandi lama tidak valid.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Ubah kata sandi
+        user.set_password(new_password)
+        user.save()
+
+        # Matikan token akses yang lama
+        refresh = RefreshToken.for_user(user)
+        refresh.blacklist()
+
+        return Response({'detail': 'Kata sandi berhasil diubah.'}, status=status.HTTP_200_OK)
 
 class MemberProfileUpdateView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -280,15 +342,60 @@ class MemberProfileUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request):
+        user = request.user
+        # member = Member.objects.get(user=user)
+        serializer = MemberProfileUpdateSerializer(user)
+        return Response(serializer.data)
 
 
 class BookLoansUser(generics.ListCreateAPIView):
-    queryset = Peminjaman.objects.all()
     serializer_class = BookLoanUserSerializer
     permission_classes = [IsAuthenticated]
+    # def perform_create(self, serializer):
+    #     serializer.save(member=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(member=self.request.user)
+    def post(self, request):
+        serializer = BookLoanByBukuSerializer(data=request.data)
+        id = request.data.get('buku')
+
+        # Cek apakah buku dengan ID yang diberikan ada di database
+        try:
+            buku = Book.objects.get(id=id)
+        except Book.DoesNotExist:
+            return Response({'detail': 'Buku dengan ID tersebut tidak ditemukan'}, status=status.HTTP_404_NOT_FOUND)
+
+        if Peminjaman.objects.filter(buku=id, status=False).exists():
+            return Response({'detail': 'Buku tidak tersedia karena belum dikembalikan!!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            # Simpan peminjaman
+            serializer.save(buku=buku, member=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
-        # Mengambil data peminjaman yang sesuai dengan user yang sedang login
         return Peminjaman.objects.filter(member=self.request.user)
+
+class BookLoanByBuku(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BookLoanSerializer
+    def post(self, request, id):
+        serializer = BookLoanByBukuSerializer(data=request.data)
+        buku = Book.objects.get(id=id)
+        if Peminjaman.objects.filter(buku=buku, status=False).exists():
+            return Response({'detail': 'Buku tidak tersedia karna belum dikembalikan!!'}, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            
+            serializer.save(buku=buku, member=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    def get_queryset(self):
+        return Peminjaman.objects.filter(member=self.request.user)
+class BookLoanListByUser(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BookLoanSerializer
+    def get_queryset(self):
+        return Peminjaman.objects.filter(member=self.request.user)
+

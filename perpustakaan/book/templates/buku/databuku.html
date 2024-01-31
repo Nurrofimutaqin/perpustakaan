@@ -61,11 +61,8 @@
               <td>{{books.tahun_terbit}}</td>
               <td>{{books.categorybook.namaCategory}}</td>
               <td>
-                <a href="detail/{{books.id}}" class="btn btn-secondary ">
+                <a href="detail/{{books.id}}" class="btn btn-info ">
                   <i class="fas fa-fw fa-info"></i><span class="text"> Detail</span>
-                </a>
-                <a href="peminjaman/{{books.id}}" class="btn btn-secondary ">
-                  <i class="fas fa-fw fa-info"></i><span class="text"> peminjaman</span>
                 </a>
                 {% if request.user.is_authenticated and request.user.role == 'librarian'%}
                 <a href="edit/{{books.id}}" class="btn btn-warning ">
@@ -73,6 +70,10 @@
                 </a>
                 <a href="delete/{{books.id}}" onclick="return confirm('aapakah anda yakin?')" class="btn btn-danger ">
                   <i class="fas fa-fw fa-trash"></i><span class="text"> Delete</span>
+                </a>
+                {%else%}
+                <a href="peminjaman/{{books.id}}" class="btn btn-success ">
+                  <i class="fas fa-fw fa-save"></i><span class="text"> peminjaman</span>
                 </a>
                 {% endif %}
               </td>
